@@ -1,49 +1,40 @@
 "use client"
 
-import { supabase } from "@/lib/supabaseClient"
 import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabaseClient"
+import BookmarkForm from "@/components/BookmarkForm"
+import BookmarkList from "@/components/BookmarkList"
 import { useRouter } from "next/navigation"
 
-export default function Home() {
+export default function Dashboard() {
+  const [user, setUser] = useState<any>(null)
   const router = useRouter()
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.push("/dashboard")
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) router.push("/")
+      else setUser(data.user)
     })
   }, [])
 
-  const login = async () => {
-    setLoading(true)
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-    })
-    setLoading(false)
+  const logout = async () => {
+    await supabase.auth.signOut()
+    router.push("/")
   }
 
+  if (!user) return null
+
   return (
-    <div className="flex h-screen items-center justify-center px-4">
-      <div className="bg-white/70 backdrop-blur-lg shadow-xl rounded-2xl p-10 w-full max-w-md text-center">
-
-        <h1 className="text-3xl font-bold mb-3">Smart Bookmark</h1>
-        <p className="text-gray-600 mb-8">
-          Secure. Private. Realtime.
-        </p>
-
-        <button
-          onClick={login}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 py-3 rounded-lg hover:shadow-md transition"
-        >
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            className="w-5 h-5"
-          />
-          {loading ? "Signing in..." : "Sign in with Google"}
+    <div className="max-w-2xl mx-auto mt-10">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">Your Bookmarks</h1>
+        <button onClick={logout} className="text-red-500">
+          Logout
         </button>
-
       </div>
+
+      <BookmarkForm user={user} />
+      <BookmarkList user={user} />
     </div>
   )
 }
