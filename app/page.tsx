@@ -1,32 +1,19 @@
-"use client"
-
-import { supabase } from "@/lib/supabaseClient"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+import LoginButton from "@/components/LoginButton"
 
 export default function Home() {
-  const router = useRouter()
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.push("/dashboard")
-    })
-  }, [])
-
-  const login = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-    })
-  }
-
   return (
-    <div className="flex h-screen items-center justify-center">
-      <button
-        onClick={login}
-        className="bg-black text-white px-6 py-3 rounded-lg"
-      >
-        Sign in with Google
-      </button>
-    </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+      <div className="bg-white p-10 rounded-2xl shadow-xl text-center space-y-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Smart Bookmark App
+        </h1>
+
+        <p className="text-gray-500">
+          Save and manage your favorite links securely.
+        </p>
+
+        <LoginButton />
+      </div>
+    </main>
   )
 }
