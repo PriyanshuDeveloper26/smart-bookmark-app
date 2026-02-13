@@ -48,3 +48,4 @@ bookmarks:
 ## Live Demo
 
 Deployed on Vercel.
+Link: https://smart-bookmark-app-lovat-five.vercel.app/
